@@ -23,20 +23,33 @@ def index():
 
 @app.route('/didwwsms', methods=['POST'])
 def didwwsms():
-    # DID post request is custom defined, our is:
-    #   src, sms sender
-    #   dst, sms receiver
-    #   time, received time
-    #   body, received message
+    # DID post request is custom defined, and not escaped
+    # To avoid injection attacks we use the following scheme
+    # Headers
+    #   SMS-Source       - 61402123123
+    #   SMS-Destination  - 61405321321
+    #   SMS-Time         - RFC-2822 format
+    # Body
+    #   sent sms text, in raw unescaped format
+
+    # can parse time with:
+    # email.utils.parsedate_tz(string)
+    # or
+    # email.utils.parsedate_to_datetime(date) 
+
+    body = request.get_data().decode('utf-8')
 
     out = '{} : {} : {} : {}'.format(
-            request.form.get("src"),
-            request.form.get("dst"),
-            request.form.get("time"),
-            request.form.get("body"),
+            request.headers.get("SMS-Source"),
+            request.headers.get("SMS-Destination"),
+            request.headers.get("SMS-Time"),
+            request.get_data().decode('utf-8')
     )
 
+    #return Response(str(request.headers), mimetype="text/xml")
+
     _send_sms('+61439069336', out)
+    #_send_sms('+61439069336', str(request.headers))
 
     return ('', 204)
 
