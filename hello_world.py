@@ -1,10 +1,45 @@
 from flask import Flask, request, Response
+from twilio.rest import Client
+
+from config import twilio_account_sid, twilio_auth_token
  
 app = Flask(__name__)
+
+tclient = Client(twilio_account_sid, twilio_auth_token)
+
+def _send_sms(to, body, frm = '+12563049271'):
+    # frm == from, from is a reserved word
+
+    message = tclient.messages.create(
+            body=body,
+            to=to,
+            from_=frm)
+
+    # TODO: Should do something with the response, especially if it is bad
  
 @app.route('/')
 def index():
     return "Hello, world!", 200
+
+@app.route('/didwwsms', methods=['POST'])
+def didwwsms():
+    # DID post request is custom defined, our is:
+    #   src, sms sender
+    #   dst, sms receiver
+    #   time, received time
+    #   body, received message
+
+    out = '{} : {} : {} : {}'.format(
+            request.form.get("src"),
+            request.form.get("dst"),
+            request.form.get("time"),
+            request.form.get("body"),
+    )
+
+    _send_sms('+61439069336', out)
+
+    return ('', 204)
+
 
 @app.route('/sms', methods=['POST'])
 def sms():
