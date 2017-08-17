@@ -107,13 +107,48 @@ Interface
 
 ### :transfer <phone number>
 ### :transfer <name>
+### :transfer
+### :
 
 Immediately transfer the duty officer phone to the specifier number or name.
+
+If no number is provided transfer to the sending number.
+
+The single `:` format is a shortcut to acknowledge a scheduled transfer.
 
 The number must be a known and approved number.
 
 The incoming number must be a known and approved number.
 
+Notify: Current redirect and new redirect.
 
 
+### :help
+
+Provide command summary in response
+
+Notify: None
+
+
+### :source
+
+Provide details of licence and link to source code
+
+Notify: None
+
+
+### :keep
+
+Keep the current redirect, disables the schedule.
+
+The schedule will be resumed after the next manual transfer.
+
+Notify: Current redirect, next scheduled redirect.
+
+
+### :current
+
+Provides details of current redirect and next two scheduled with times.
+
+Notify: None
 
