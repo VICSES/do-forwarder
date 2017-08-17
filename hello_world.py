@@ -57,41 +57,6 @@ class DoManager:
                 self.send_sms = None
 
 
-def _cmd_transfer(args):
-    # :transfer <phone number>
-    # :transfer <name>
-
-    if re.search('[a-zA-Z]', args):
-        # Any alpha characters -> name
-        pass # TODO - map names
-    else:
-        # No alpha characters -> number
-        num = re.sub(r"\D", "", args)
-
-        # Must be a sane Australian mobile number
-        # Can be either local or international format
-        # Must output international format
-        if num.startswith("04") and num.len() == 10:
-            num = '61' + num[1:]
-
-        if num.startswith('614') and num.len() == 11:
-            _set_redirect(num)
-        else:
-            pass # TODO: bad number format
-
-def _process_command(cmd):
-    cmd = cmd.lstrip(' :')
-
-    #processor = getattr(self, '_cmd_'+cmd.split(' ',1)[0].lower(), None)
-    processor_name = '_cmd_{}'.format(cmd.split(' ',1)[0].lower())
-
-    try:
-        locals()[processor_name](cmd.split(' ',1)[1])
-    except KeyError:
-        pass # TODO
-
-
- 
 # We only need this for local development.
 if __name__ == '__main__':
     app.run()

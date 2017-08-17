@@ -107,6 +107,12 @@ class SmsIn:
 class SmsOut:
     @staticmethod
     def send(to_num, from_num, body):
+        # NOTE: One SMS is up to 160 GSM characters
+        #       Above 160 characters we send a multi-part message
+        #       Each multipart message is up to 153 GSM characters
+        #       GSM characters are A-Za-z0-9 and a few bonus characters
+        #       Different language tables and UTF-16/UCS-2 are supported
+        #       UTF-16 allows up to 70 characters per message
         message = client.messages.create(
                 body=body,
                 to=to_num,
